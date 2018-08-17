@@ -1,0 +1,26 @@
+extends layout
+
+block content
+  script 
+  h1= title
+  select(name='patternsSelect')
+    each pattern in patterns
+      option(value=pattern.pattern) #{pattern.name}
+
+  select(name='noteSelect')
+    each note in notes
+      option(value=note) #{note}
+
+  div
+    img(id='fretboardImage', width=1000, height=300)
+
+  script.
+    $(document).ready(function() {
+        $('select[name="noteSelect"],select[name="patternsSelect"]').change(function (e) {
+            let note = $('select[name="noteSelect"]').val().replace('#', 's');
+            let pattern = $('select[name="patternsSelect"]').val();
+            $.get(`/${pattern}/${note}`, function(b64data) {
+              $('img#fretboardImage').attr('src', `data:image/png;base64,${b64data}`).fadeIn();
+            });
+        })
+    });
