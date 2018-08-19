@@ -13,10 +13,12 @@
     "http-errors": "~1.6.2",
     "jquery": "^3.3.1",
     "morgan": "~1.9.0",
+    "opentype": "^0.1.2",
     "pug": "2.0.0-beta11",
     "pureimage": "^0.1.6"
   },
   "devDependencies": {
-    "nodemon": "^1.18.3"
+    "nodemon": "^1.18.3",
+    "standard": "^11.0.1"
   }
 }
