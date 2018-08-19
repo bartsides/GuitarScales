@@ -1,2 +1,2 @@
 # GuitarScales
-Dynamically displays scales on a guitar fretboard. Written using NodeJS, JS and jQuery.
+Dynamically displays a scale's available notes on a guitar fretboard. Written using NodeJS, JS and jQuery.
