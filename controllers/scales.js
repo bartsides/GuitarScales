@@ -5,9 +5,9 @@ module.exports = {
   getNotes: function (pattern, note) {
     let result = []
     pattern.split(',').forEach(e => {
-      let mod = notes.notes[note]
+      let mod = notes.notes[note.replace(' ', '')]
       if (e.includes('b')) { mod -= 1 }
-      if (e.includes('#')) { mod += 1 }
+      if (e.includes('s')) { mod += 1 }
 
       // Skip 1 as it is the first note and has a mod of 0.
       if (e.includes('2')) {

@@ -10,6 +10,7 @@ let notes = new Notes().getNotes()
 
 /* GET home page. */
 router.get('/', function (req, res) {
+  console.log('home page');
   res.render('index', {
     title: 'Guitar Scales',
     patterns: patterns,
@@ -18,7 +19,7 @@ router.get('/', function (req, res) {
 })
 
 router.get('/:pattern/:note', function (req, res) {
-  fretDrawer.drawFretboard(req.params.pattern, req.params.note).then(function (result) {
+  fretDrawer.drawFretboard(decodeURI(req.params.pattern), decodeURI(req.params.note)).then(function (result) {
     res.contentType = 'base64'
     res.send(result)
   })
