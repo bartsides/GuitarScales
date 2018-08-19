@@ -12,7 +12,7 @@ block content
       option(value=note) #{note}
 
   div
-    img(id='fretboardImage', width=1000, height=300)
+    img(id='fretboardImage', width=1000, height=300, style="display: none;", visible="false")
 
   script.
     $(document).ready(function() {
@@ -20,7 +20,8 @@ block content
             let note = $('select[name="noteSelect"]').val().replace('#', 's');
             let pattern = $('select[name="patternsSelect"]').val();
             $.get(`/${pattern}/${note}`, function(b64data) {
-              $('img#fretboardImage').attr('src', `data:image/png;base64,${b64data}`).fadeIn();
+              $('img#fretboardImage').attr('src', `data:image/png;base64,${b64data}`);
+              $('img#fretboardImage').attr('style', '');
             });
         })
     });
