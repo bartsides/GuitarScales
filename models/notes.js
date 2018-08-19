@@ -21,7 +21,7 @@ class Notes {
     }
     let note = Object.keys(this.notes)[(index - 1) % 12].replace('s', '#')
     if (note.length === 1) {
-      note += ' '
+      note = ' ' + note;
     }
     return note
   }
