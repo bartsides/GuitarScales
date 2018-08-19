@@ -19,10 +19,7 @@ block content
         $('select[name="noteSelect"],select[name="patternsSelect"]').change(function (e) {
             let note = $('select[name="noteSelect"]').val().replace('#', 's');
             let pattern = $('select[name="patternsSelect"]').val();
-            let uri = encodeURI(`/${pattern}/${note}`);
-            console.log(pattern);
-            console.log(uri);
-            $.get(uri, function(b64data) {
+            $.get(encodeURI(`/${pattern}/${note}`), function(b64data) {
               $('img#fretboardImage').attr('src', `data:image/png;base64,${b64data}`);
               $('img#fretboardImage').attr('style', '');
             });
