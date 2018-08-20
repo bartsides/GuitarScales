@@ -1,27 +1,23 @@
 module.exports = class FretDrawer {
   drawFretboard (pattern, note) {
-    const PImage = require('pureimage')
-    const fs = require('fs')
-    const path = require('path')
-    const opentype = require('opentype.js')
+    const Canvas = require('canvas-prebuilt')
+    const canvas = new Canvas()
     const getNotes = require('./scales').getNotes
     const Notes = require('../models/notes')
     const notesEnum = new Notes()
-    const helveticaLoc = path.resolve(`${__dirname}/../public/fonts/helvetica.ttf`)
-    const imgLoc = path.resolve(`${__dirname}/../public/images/fretboard.png`)
 
     const width = 1000
     const height = 300
-    const markerScale = 0.7
+    const markerScale = 0.74
     const nutX = 44
-    const openStringX = nutX - 22
+    const openStringX = nutX - 20
     const neckTop = 30
     const neckBottom = 230
     const neckLength = width - nutX * 2
-    const fretNumberingY = neckTop - 6
+    const fretNumberingY = neckTop - 4
     const frets = 23
-    const fontSize = '12pt'
-    const openStringFontSize = '20pt'
+    const fontSize = '9pt'
+    const openStringFontSize = '16pt'
     const fontFamily = 'Helvetica'
     const white = '#ffffff'
     const black = '#000000'
@@ -29,15 +25,13 @@ module.exports = class FretDrawer {
 
     // Guitar tuning highest note to lowest
     let strings = ['E', 'B', 'G', 'D', 'A', 'E']
-    let font = PImage.registerFont(helveticaLoc, fontFamily)
-    font.font = opentype.loadSync(font.binary)
-    font.loaded = true
 
     // Initialize picture with white background
-    let img = PImage.make(width, height)
-    let c = img.getContext('2d')
-    c.fillStyle = white
-    c.fillRect(0, 0, width, height)
+    canvas.width = width
+    canvas.height = height
+    const ctx = canvas.getContext('2d')
+    ctx.fillStyle = white
+    ctx.fillRect(0, 0, width, height)
 
     // Notes in scale
     let notes = getNotes(pattern, note)
@@ -51,9 +45,10 @@ module.exports = class FretDrawer {
       let x = i === 0 ? nutX : nutX + ratio * neckLength
 
       // Draw Fret Number
-      c.fillStyle = black
-      c.font = `${fontSize} ${fontFamily}`
-      c.fillText(String(i), i === 0 ? openStringX + 4 : ((lastX + x) / 2) - 4, fretNumberingY)
+      ctx.fillStyle = black
+      ctx.font = `${fontSize} ${fontFamily}`
+      let fretNumString = i < 10 ? ' ' + String(i) : String(i)
+      ctx.fillText(String(fretNumString), i === 0 ? openStringX + 4 : ((lastX + x) / 2) - 6, fretNumberingY)
 
       for (let j = 0; j < strings.length; j++) {
         let fretNote = notesEnum.getNote(i + notesEnum.notes[strings[j]])
@@ -77,33 +72,33 @@ module.exports = class FretDrawer {
           }
 
           // Draw fret location in scale
-          c.fillStyle = blue
-          c.fillRect(rectX, rectY, rectW, rectH)
+          ctx.fillStyle = blue
+          ctx.fillRect(rectX, rectY, rectW, rectH)
 
           // Draw note
           if (fretNote.length === 1) {
             fretNote = ' ' + fretNote
           }
-          c.fillStyle = white
-          c.font = `${fontSize} ${fontFamily}`
-          c.fillText(fretNote, noteX, noteY)
+          ctx.fillStyle = white
+          ctx.font = `${fontSize} ${fontFamily}`
+          ctx.fillText(fretNote, noteX, noteY)
         }
       }
 
       if (i !== 0) {
-        c.fillStyle = black
-        c.drawLine({ start: {x: x, y: neckTop}, end: {x: x, y: neckBottom} })
+        ctx.fillStyle = black
+        this.drawLine(ctx, x, neckTop, x, neckBottom)
       }
 
       lastX = x
     }
 
     // Fretboard outlines
-    c.fillStyle = black
-    c.drawLine({ start: { x: nutX, y: neckTop }, end: { x: nutX + neckLength, y: neckTop } })
-    c.drawLine({ start: { x: nutX, y: neckBottom }, end: { x: nutX + neckLength, y: neckBottom } })
-    c.drawLine({ start: { x: nutX, y: neckTop }, end: { x: nutX, y: neckBottom } })
-    c.drawLine({ start: { x: nutX + neckLength, y: neckTop }, end: { x: nutX + neckLength, y: neckBottom } })
+    ctx.fillStyle = black
+    this.drawLine(ctx, nutX, neckTop, nutX + neckLength, neckTop)
+    this.drawLine(ctx, nutX, neckBottom, nutX + neckLength, neckBottom)
+    this.drawLine(ctx, nutX, neckTop, nutX, neckBottom)
+    this.drawLine(ctx, nutX + neckLength, neckTop, nutX + neckLength, neckBottom)
 
     for (let i = 0; i < strings.length; i++) {
       let openNote = strings[i]
@@ -111,24 +106,28 @@ module.exports = class FretDrawer {
 
       // Draw string separator
       if (i !== strings.length - 1) {
-        c.fillStyle = black
-        c.drawLine({ start: {x: nutX, y: stringY}, end: {x: nutX + neckLength, y: stringY} })
+        ctx.fillStyle = black
+        this.drawLine(ctx, nutX, stringY, nutX + neckLength, stringY)
       }
 
       // Draw open string note
-      c.fillStyle = black
-      c.font = `${openStringFontSize} ${fontFamily}`
-      c.fillText(openNote, openStringX - 20, stringY - stringDistance * 0.25)
+      ctx.fillStyle = black
+      ctx.font = `${openStringFontSize} ${fontFamily}`
+      ctx.fillText(openNote, openStringX - 24, stringY - stringDistance * 0.25)
     }
 
-    c.fillStyle = black
-    c.drawLine({ start: {x: openStringX - 6, y: neckTop}, end: {x: openStringX - 6, y: neckBottom} })
+    ctx.fillStyle = black
+    this.drawLine(ctx, openStringX - 6, neckTop, openStringX - 6, neckBottom)
 
-    return PImage.encodePNGToStream(img, fs.createWriteStream(imgLoc)).then(() => {
-      return Promise.resolve(fs.readFileSync(imgLoc, {encoding: 'base64'}))
-    }).catch((err) => { console.log(err) })
+    return canvas.toDataURL(['image/png', null, null])
   }
   fretLocation (fretNumber, neckLength) {
     return neckLength - (neckLength / (Math.pow(2, fretNumber / 12)))
+  }
+  drawLine (ctx, startX, startY, endX, endY) {
+    ctx.beginPath()
+    ctx.moveTo(startX, startY)
+    ctx.lineTo(endX, endY)
+    ctx.stroke()
   }
 }
