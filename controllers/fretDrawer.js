@@ -8,13 +8,13 @@ module.exports = class FretDrawer {
 
     const width = 1000
     const height = 300
-    const markerScale = 0.7
+    const markerScale = 0.74
     const nutX = 44
     const openStringX = nutX - 20
     const neckTop = 30
     const neckBottom = 230
     const neckLength = width - nutX * 2
-    const fretNumberingY = neckTop - 6
+    const fretNumberingY = neckTop - 4
     const frets = 23
     const fontSize = '9pt'
     const openStringFontSize = '16pt'
