@@ -5,3 +5,38 @@ body {
 a {
   color: #00B7FF;
 }
+
+select {
+  background: #2980b9;
+}
+
+.table {
+  display: table;
+}
+
+.divTable{
+  display: table;
+}
+
+.divTableRow {
+	display: table-row;
+}
+
+.divTableCell, .divTableHead {
+	display: table-cell;
+}
+
+.divTableHeading {
+	display: table-header-group;
+	font-weight: bold;
+}
+
+.divTableFoot {
+	background-color: #EEE;
+	display: table-footer-group;
+	font-weight: bold;
+}
+
+.divTableBody {
+	display: table-row-group;
+}

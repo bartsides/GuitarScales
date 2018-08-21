@@ -1,12 +1,13 @@
-var createError = require('http-errors')
-var express = require('express')
-var path = require('path')
-var cookieParser = require('cookie-parser')
-var logger = require('morgan')
+const createError = require('http-errors')
+const express = require('express')
+const path = require('path')
+const cookieParser = require('cookie-parser')
+const logger = require('morgan')
 
-var indexRouter = require('./routes/index')
-var patternsRouter = require('./routes/patterns')
-var scalesRouter = require('./routes/scales')
+const indexRouter = require('./routes/index')
+const patternsRouter = require('./routes/patterns')
+const scalesRouter = require('./routes/scales')
+const tuningsRouter = require('./routes/tunings')
 
 const app = express()
 
@@ -23,6 +24,7 @@ app.use(express.static(path.join(__dirname, 'public')))
 app.use('/', indexRouter)
 app.use('/patterns', patternsRouter)
 app.use('/scales', scalesRouter)
+app.use('/tunings', tuningsRouter)
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
