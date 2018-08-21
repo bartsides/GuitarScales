@@ -1,18 +1,17 @@
 module.exports = class FretDrawer {
-  drawFretboard (pattern, note) {
+  drawFretboard (tuning, pattern, note) {
     const Canvas = require('canvas-prebuilt')
     const canvas = new Canvas()
     const getNotes = require('./scales').getNotes
     const Notes = require('../models/notes')
     const notesEnum = new Notes()
 
+    const stringDistance = 35
     const width = 1000
-    const height = 300
     const markerScale = 0.74
     const nutX = 44
     const openStringX = nutX - 20
     const neckTop = 30
-    const neckBottom = 230
     const neckLength = width - nutX * 2
     const fretNumberingY = neckTop - 4
     const frets = 23
@@ -21,10 +20,15 @@ module.exports = class FretDrawer {
     const fontFamily = 'Helvetica'
     const white = '#ffffff'
     const black = '#000000'
-    const blue = '#4d94ff'
+    const blue = '#2980b9'
 
     // Guitar tuning highest note to lowest
-    let strings = ['E', 'B', 'G', 'D', 'A', 'E']
+    let strings = tuning.reverse()
+    let height = stringDistance * strings.length + 50
+    let neckBottom = neckTop + stringDistance * strings.length
+
+    // Notes in scale
+    let notes = getNotes(pattern, note)
 
     // Initialize picture with white background
     canvas.width = width
@@ -33,10 +37,6 @@ module.exports = class FretDrawer {
     ctx.fillStyle = white
     ctx.fillRect(0, 0, width, height)
 
-    // Notes in scale
-    let notes = getNotes(pattern, note)
-
-    let stringDistance = (neckBottom - neckTop) / strings.length
     let lastX = nutX
     let endOfFretboard = this.fretLocation(frets - 1, neckLength)
 
@@ -47,8 +47,8 @@ module.exports = class FretDrawer {
       // Draw Fret Number
       ctx.fillStyle = black
       ctx.font = `${fontSize} ${fontFamily}`
-      let fretNumString = i < 10 ? ' ' + String(i) : String(i)
-      ctx.fillText(String(fretNumString), i === 0 ? openStringX + 4 : ((lastX + x) / 2) - 6, fretNumberingY)
+      let fretNumString = i < 10 ? ' ' + i : String(i)
+      ctx.fillText(fretNumString, i === 0 ? openStringX + 4 : ((lastX + x) / 2) - 6, fretNumberingY)
 
       for (let j = 0; j < strings.length; j++) {
         let fretNote = notesEnum.getNote(i + notesEnum.notes[strings[j]])

@@ -3,25 +3,47 @@ extends layout
 block content
   script 
   h1= title
-  select(name='patternsSelect')
-    each pattern in patterns
-      option(value=pattern.pattern) #{pattern.name}
 
-  select(name='noteSelect')
-    each note in notes
-      option(value=note) #{note}
+  div(class='divTable')
+    div(class='divTableBody')
+      div(class='divTableRow')
+        div(class='divTableCell')
+          h2 Scale
+        div(class='divTableCell')
+          h2 Key
+        div(class='divTableCell')
+          h2 Tuning
+      div(class='divTableRow')
+        div(class='divTableCell')
+          span(class="custom-dropdown")
+            select(name='patternSelect')
+              each pattern in patterns
+                option(value=pattern.pattern) #{pattern.name}
+                
+        div(class='divTableCell')
+          span(class="custom-dropdown")
+            select(name='noteSelect', class="custom-dropdown")
+              each note in notes
+                option(value=note) #{note}
+
+        div(class='divTableCell')
+          span(class="custom-dropdown")
+            select(name='tuningSelect')
+              each tuning in tunings
+                option(value=tuning.notes) #{tuning.name}
 
   div
-    img(id='fretboardImage', width=1000, height=300, style="display: none;", visible="false")
+    img(id='fretboardImage', style="display: none;")
 
   script.
     $(document).ready(function() {
-        $('select[name="noteSelect"],select[name="patternsSelect"]').change(function (e) {
-            let note = $('select[name="noteSelect"]').val().replace('#', 's');
-            let pattern = $('select[name="patternsSelect"]').val();
-            $.get(encodeURI(`/${pattern}/${note}`), function(b64data) {
-              $('img#fretboardImage').attr('src', b64data);
-              $('img#fretboardImage').attr('style', '');
-            });
-        })
+      $('select').change(function (e) {
+          let note = $('select[name="noteSelect"]').val().replace('#', 's')
+          let pattern = $('select[name="patternSelect"]').val()
+          let tuningNotes = $('select[name="tuningSelect"]').val()
+          $.get(encodeURI(`/${tuningNotes}/${pattern}/${note}`), function(b64data) {
+            $('img#fretboardImage').attr('src', b64data)
+            $('img#fretboardImage').attr('style', '')
+          });
+      })
     });
