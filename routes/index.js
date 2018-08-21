@@ -23,8 +23,7 @@ router.get('/', function (req, res) {
 /* GET fretboard png in base64 string format. */
 router.get('/:tuning/:pattern/:note', function (req, res) {
   res.contentType = 'base64'
-  let tuningArray = decodeURI(req.params.tuning).replace('[', '').replace(']', '').split(',')
-  res.send(fretDrawer.drawFretboard(tuningArray, decodeURI(req.params.pattern), decodeURI(req.params.note)))
+  res.send(fretDrawer.drawFretboard(decodeURI(req.params.tuning).split(','), decodeURI(req.params.pattern), decodeURI(req.params.note)))
 })
 
 module.exports = router

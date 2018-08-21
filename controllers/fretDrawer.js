@@ -6,7 +6,6 @@ module.exports = class FretDrawer {
     const Notes = require('../models/notes')
     const notesEnum = new Notes()
 
-    
     const stringDistance = 35
     const width = 1000
     const markerScale = 0.74
@@ -37,7 +36,6 @@ module.exports = class FretDrawer {
     const ctx = canvas.getContext('2d')
     ctx.fillStyle = white
     ctx.fillRect(0, 0, width, height)
-
 
     let lastX = nutX
     let endOfFretboard = this.fretLocation(frets - 1, neckLength)
